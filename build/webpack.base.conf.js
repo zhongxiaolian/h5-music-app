@@ -26,6 +26,11 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': resolve('src'),
+      'components': resolve('src/components'),
+      // 别名用于引入css时，前面为什么要加~
+      'common': resolve('src/common'),
+      'api': resolve('src/api'),
+      'baseComponents': resolve('src/baseComponents')
     }
   },
   module: {
