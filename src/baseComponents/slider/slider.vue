@@ -69,7 +69,6 @@
             this.children = this.$refs.sliderGroup.children;
             let width = 0;
             let sliderWidth = this.$refs.slider.clientWidth;
-            console.log(sliderWidth);
             for(let i=0;i<this.children.length;i++){
                 let child = this.children[i];
                 addClass(child,'slider-item');
@@ -115,7 +114,6 @@
          * 初始化轮播图小面的小圆点
          */
         _initDots(){
-            console.log(this.children.length);
             this.dots = new Array(this.children.length);
         },
         /**
