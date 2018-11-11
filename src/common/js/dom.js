@@ -2,7 +2,7 @@
  * @Author: kj
  * @Date: 2018-11-08 13:30:53
  * @LastEditors: kj
- * @LastEditTime: 2018-11-08 13:43:45
+ * @LastEditTime: 2018-11-10 17:31:55
  * @Description: 
  */
 
@@ -27,4 +27,12 @@ export function addClass(el,className){
 export function hasClass(el,className){
     let reg = new RegExp('(^|\\s)'+className+'(\\s|$)');
     return reg.test(el.className);
+}
+
+export function getData(el,name,val){
+    if(val){
+        return el.setAttribute(name,val)
+    }else{
+        return el.getAttribute(name)
+    }
 }
