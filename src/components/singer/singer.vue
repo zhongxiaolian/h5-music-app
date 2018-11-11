@@ -1,6 +1,9 @@
 <template>
     <div class="singer">
-        <ListView v-bind:data="sortedSingers" v-if="sortedSingers"></ListView>
+        <ListView v-bind:data="sortedSingers" 
+                  v-if="sortedSingers"
+                  v-on:select="selectSinger"></ListView>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -68,6 +71,13 @@
                 }
             }
             this.sortedSingers = all;
+        },
+        // 接收listview派发的select事件
+        selectSinger(singer){
+            // 路由的编程接口
+            this.$router.push({
+                path: `/singer/${singer.singer_id}`,
+            });
         }
     }
   }

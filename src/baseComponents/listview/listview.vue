@@ -9,7 +9,10 @@
             <li v-for="(group,index) in data" v-bind:key="index" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul>
-                    <li v-for="(item,index) in group.items" v-bind:key="index" class="list-group-item">
+                    <li v-for="(item,index) in group.items" 
+                        v-bind:key="index" 
+                        v-on:click="selectItem(item)"
+                        class="list-group-item">
                         <img class="avatar" v-lazy="item.singer_pic" alt="">
                         <span class="name">{{item.singer_name}}</span>
                     </li>
@@ -111,6 +114,7 @@
             // 然后watch函数自动计算currentIndex值
             this.scrollY = -this.listHeight[index];
         },
+        // better-scroll滚动事件的回调函数
         scrollHandler(pos){
             this.scrollY = pos.y;
         },
@@ -124,13 +128,15 @@
                 height += item.clientHeight;
                 this.listHeight.push(height);
             }
+        },
+        selectItem(item){
+            this.$emit('select',item);
         }
     },
     watch:{
         data(){
             setTimeout(() => {
                 this.calculateHeight();
-                console.log(this.listHeight);
             }, 20);
         },
         scrollY(newY){
