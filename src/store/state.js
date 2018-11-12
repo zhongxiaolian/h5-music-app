@@ -1,5 +1,6 @@
 const state = {
-    singer: {}
+    singer: {},
+    playing: false
 }
 
 export default state;
