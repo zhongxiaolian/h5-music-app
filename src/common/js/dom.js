@@ -2,7 +2,7 @@
  * @Author: kj
  * @Date: 2018-11-08 13:30:53
  * @LastEditors: kj
- * @LastEditTime: 2018-11-10 17:31:55
+ * @LastEditTime: 2018-11-12 18:00:26
  * @Description: 
  */
 
@@ -29,10 +29,45 @@ export function hasClass(el,className){
     return reg.test(el.className);
 }
 
+/**
+ * 获取dom上绑定的data-属性值
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} val 
+ */
 export function getData(el,name,val){
     if(val){
         return el.setAttribute(name,val)
     }else{
         return el.getAttribute(name)
+    }
+}
+
+// 通过一个立即执行函数进行浏览器能力检测
+let elementStyle = document.createElement('div').style;
+let gender = (function(){
+    let transformNames = {
+        webkit : 'webkitTransform',
+        Moz: 'MozTransform',
+        O: 'OTransform',
+        ms: 'msTransform',
+        standard: 'transform' 
+    }
+    for(let key in transformNames){
+        if(elementStyle[transformNames[key]] !== undefined){
+            return key
+        }
+    }
+})()
+
+/**
+ * 传入样式，自动添加浏览器前缀。
+ * @param {*} style 
+ */
+export function prefixStyle(style){
+    if(gender === 'standard'){
+        return style
+    }else{
+        return gender + style.charAt(0).toUpperCase() + style.substr(1);
     }
 }

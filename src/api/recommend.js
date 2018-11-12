@@ -28,3 +28,5 @@ export function getRecomPlayList(){
     }
     return jsonp(url,data,option)
 }
+
+

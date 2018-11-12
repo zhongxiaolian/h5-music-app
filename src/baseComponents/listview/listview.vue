@@ -123,6 +123,10 @@
             const list = this.$refs.listGroup;
             let height = 0;
             this.listHeight.push(height);
+            if(!list){
+                alert('服务器忙，请稍后');
+                return;
+            }
             for(let i=0;i<list.length;i++){
                 let item = list[i];
                 height += item.clientHeight;

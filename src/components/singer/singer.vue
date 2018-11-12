@@ -10,6 +10,9 @@
 <script type='text/ecmascript-6'>
   import {getSingerList,getIndex} from 'api/singer.js';
   import ListView from 'baseComponents/listview/listview.vue';
+  // vuex提供的语法糖
+  import {mapMutations} from 'vuex';
+
   export default {
     data () {
       return {
@@ -78,7 +81,11 @@
             this.$router.push({
                 path: `/singer/${singer.singer_id}`,
             });
-        }
+            this.setSinger(singer);
+        },
+        ...mapMutations({
+            setSinger: 'SET_SINGER'
+        })
     }
   }
 </script>
