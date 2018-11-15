@@ -9,6 +9,33 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const axios = require('axios');
+
+// 配置本地node服务器提供mock后台的数据===============================
+const express = require('express')
+// 编写路由
+var apiRoutes = express.Router()
+apiRoutes.get('/lyric', function (req, res) {
+    const url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
+    axios.get(url,{
+      headers: {
+        referer: 'https://y.qq.com/portal/player.html',
+        host: 'y.qq.com'
+      },
+      params: req.query
+    }).then((response)=>{
+        var  ret = response.data;
+        if(typeof ret === "string"){
+            var reg = /^\w+\(({[^()]+})\)/;
+            var matches = ret.match(reg);
+            if(matches){
+                ret = JSON.parse(matches[1]);
+            }
+        }
+        res.json(ret);
+    })
+})
+// 配置本地node服务器提供mock后台的数据===============================
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -42,6 +69,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    before(app){
+      app.use('/api',apiRoutes);
     }
   },
   plugins: [

@@ -52,7 +52,7 @@
       return {
           scrollY: -1,
           currentIndex: 0,
-          diff: 0
+          diff: 0  // 当前的height2距离顶部固定title的距离
       }
     },
     components:{
@@ -135,6 +135,9 @@
         },
         selectItem(item){
             this.$emit('select',item);
+        },
+        refresh(){
+            this.$refs.scroll.refresh();
         }
     },
     watch:{
@@ -166,10 +169,8 @@
             this.currentIndex = listHeight.length - 2;
         },
         diff(newVal){
-            // console.log(newVal);
             // 30表示每个条目标题的高度，如果结果为0，表示固定的条目不动
             let transY = (newVal>0 && newVal<30) ? newVal-30 : 0;
-            console.log(transY);
             this.$refs.fixed.style.transform = `translate3d(0,${transY}px,0)`;
         }
     }

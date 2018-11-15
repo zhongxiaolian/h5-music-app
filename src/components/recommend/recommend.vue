@@ -1,5 +1,5 @@
 <template>
-    <div class="recommend">
+    <div class="recommend" ref="recommend">
         <div class="recommend-content">
             <!-- 这里必须要添加v-if,因为getRecommend是一个异步过程，此时直接渲染slider组件会不正常。 -->
             <div class="slider-wrapper" v-if="recommends.length>0">
@@ -13,9 +13,9 @@
             </div>
             <div class="recommend-list">
                 <h1 class="list-title">热门歌曲推荐</h1>
-                <scroll class="item-wrapper" v-bind:data="playList" ref="scroll">
+                <scroll class="item-wrapper" v-bind:data="DiscList" ref="scroll">
                     <ul>
-                        <li v-for="(item,index) in playList" :key="index" class="item">
+                        <li v-for="(item,index) in DiscList" :key="index" class="item">
                             <div class="icon">
                                 <img  width="60" height="60" v-lazy="item.cover" alt="">
                             </div>
@@ -25,7 +25,7 @@
                             </div>
                         </li>
                     </ul>
-                    <loading class="loading-container" v-show="!playList.length"></loading>
+                    <loading class="loading-container" v-show="!DiscList.length"></loading>
                 </scroll>
             </div>
         </div>
@@ -36,12 +36,15 @@
   import {getRecommend,getRecomPlayList} from 'api/recommend.js';
   import Slider from 'baseComponents/slider/slider.vue';
   import Scroll from 'baseComponents/scroll/scroll.vue';
-  import Loading from 'baseComponents/loading/loading.vue'
+  import Loading from 'baseComponents/loading/loading.vue';
+  import {playlistMixin} from 'common/js/mixin.js'
+
   export default {
+    mixins:[playlistMixin],
     data () {
       return {
         recommends: [],
-        playList: []
+        DiscList: []
       }
     },
     created(){
@@ -63,7 +66,7 @@
         },
         _getRecomPlayList(){
             getRecomPlayList().then((res)=>{
-                this.playList = res.recomPlaylist.data.v_hot;
+                this.DiscList = res.recomPlaylist.data.v_hot;
             })
         },
         _loadHandler(){
@@ -74,6 +77,11 @@
                 this.$refs.scroll.refresh();   // 通过这样可以调用引用组件的方法。
                 this.hasLoad = true;   
             }
+        },
+        handlePlaylist(playList){
+            const bottom = playList.length>0 ? '60px' : '';
+            this.$refs.recommend.style.bottom = bottom;
+            this.$refs.scroll.refresh();
         }
     },
     components:{
