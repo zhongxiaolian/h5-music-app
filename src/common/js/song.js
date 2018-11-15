@@ -1,3 +1,5 @@
+import {getLyric} from 'api/song.js';
+import {Base64} from 'js-base64';
 export default class Song{
     constructor({id,mid,singer,name,album,duration,image,url}){
         this.id = id;
@@ -8,6 +10,25 @@ export default class Song{
         this.duration = duration;
         this.image = image;
         this.url = url;
+    }
+
+    getLyric(mid){
+        let self = this;
+        if(this.lyric){
+            return Promise.resolve(this.lyric);
+        }
+        return new Promise((resolve,reject)=>{
+            getLyric(mid).then((res)=>{
+                res = res.data;
+                if(res.retcode === 0){
+                    self.lyric = Base64.decode(res.lyric);
+                    resolve(self.lyric);
+                }else{
+                    reject('no lyric');
+                }
+            });
+        });
+        
     }
 }
 export function createSong(musicData,vkey){

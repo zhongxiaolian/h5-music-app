@@ -1,8 +1,9 @@
 <template>
-    <div class="singer">
+    <div class="singer" ref="singer">
         <ListView v-bind:data="sortedSingers" 
                   v-if="sortedSingers"
-                  v-on:select="selectSinger"></ListView>
+                  v-on:select="selectSinger"
+                  ref="listview"></ListView>
         <router-view></router-view>
     </div>
 </template>
@@ -12,8 +13,9 @@
   import ListView from 'baseComponents/listview/listview.vue';
   // vuex提供的语法糖
   import {mapMutations} from 'vuex';
-
+  import {playlistMixin} from 'common/js/mixin.js';
   export default {
+    mixins:[playlistMixin],
     data () {
       return {
           index: [],
@@ -31,6 +33,12 @@
       ListView
     },
     methods: {
+        // 当迷你播放器播放时，scroll底部bottom设定
+        handlePlaylist(playList){
+            const bottom = playList.length>0 ? '60px' : '';
+            this.$refs.singer.style.bottom = bottom;
+            this.$refs.listview.refresh();
+        },
         _getSingerList(obj){
           getSingerList(obj.id).then((res)=>{
               let singerBlock = {};

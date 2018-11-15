@@ -7,7 +7,7 @@
         <h1 class="title">{{title}}</h1>
         <div class="bg-image" v-bind:style='bgStyle' ref="bgImage">
             <div class="play-wrapper" v-show="songs.length>0" ref="playWrapper">
-                <div class="play">
+                <div class="play" @click="random">
                     <i class="icon-play"></i>
                     <span class="text">随机播放全部</span>
                 </div>
@@ -24,7 +24,7 @@
             :listen-scroll="listenScroll"
             v-on:scroll="scrollHandler">
                 <div class="song-list-wrapper">
-                    <song-list v-bind:songs="songs"></song-list>
+                    <song-list v-bind:songs="songs" v-on:select="selectHandler"></song-list>
                 </div>
                 <div class="loading-container" v-show="!songs.length">
                     <Loading></Loading>
@@ -38,10 +38,15 @@
   import Scroll from 'baseComponents/scroll/scroll.vue';
   import SongList from 'baseComponents/song-list/song-list.vue';
   import {prefixStyle} from 'common/js/dom.js';
+  import {mapActions} from 'vuex';
+  import {mapGetters} from 'vuex';
+  import {getLyric} from 'api/song.js';
+  import {playlistMixin} from 'common/js/mixin.js'
   // layer滚动到上方的预留值
   const RESERVED_HEIGHT = 40;
 
   export default {
+    mixins:[playlistMixin],
     props:{
         bgImage: {
             type: String,
@@ -64,7 +69,10 @@
     computed:{
         bgStyle(){
             return `background-image:url(${this.bgImage})`
-        }
+        },
+        ...mapGetters([
+            'currentIndex'
+        ])
     },
     components:{
         Loading,
@@ -82,12 +90,37 @@
         this.listenScroll = true;
     },
     methods:{
+        random(){
+            this.randomPlay({
+                list: this.songs,
+                index : this.currentIndex
+            });
+        },
         scrollHandler(pos){
             this.scrollY = pos.y;
         },
         back(){
             this.$router.back();
-        }
+        },
+        selectHandler(song,index){
+            console.log(song);
+            this.selectPlay({
+                list: this.songs,
+                index
+            });
+        },
+        // 覆盖mixin里面的方法
+        handlePlaylist(playList){
+            console.log(1234)
+            const bottom = playList.length>0 ? '60px' : '';
+            this.$refs.list.$el.style.bottom = bottom;
+            this.$refs.list.refresh();
+        },
+        // 映射到methods上
+        ...mapActions([
+            'selectPlay',
+            'randomPlay'
+        ])
     },
     watch: {
         scrollY(newY){
